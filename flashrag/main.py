@@ -18,7 +18,7 @@ async def app_lifespan(app: FastAPI):
     # run application
     yield
     # cleanup the resources
-    hp.ml_models.clear()
+    hp.llm = None
 
 
 # step-2: define the application
@@ -55,9 +55,10 @@ def upload_docs(
     for doc in docs:
         # step-1: load/read every uploaded document
         fname = doc.filename
+        fpath = f"../data/{fname}"
         try:
             contents = doc.file.read()
-            with open(f"../data/{fname}", "wb") as f:
+            with open(fpath, "wb") as f:
                 f.write(contents)
             docs_metadata[fname] = {
                 "status": "SUCCESS",
@@ -70,8 +71,21 @@ def upload_docs(
         finally:
             doc.file.close()
 
-        # step-2: tokenize, embed & store every file embeddings into the vector store
-        # TODO!
+        # step-2: tokenize various document types
+        text_splitter = utils.get_text_splitter()
+        if fname.endswith(".pdf"):
+            doc_data = utils.preprocess_pdf_doc(
+                fpath=fpath, text_splitter=text_splitter
+            )
+        elif fname.endswith(".txt"):
+            doc_data = utils.preprocess_txt_doc(
+                fpath=fpath, text_splitter=text_splitter
+            )
+        else:
+            return {"message": "Uploaded file-format NOT supported"}
+
+        # step-3: create embeddings & store into the vector store
+        utils.load_vector_db(data=doc_data, collection_name=collection_name)
 
     return {
         "message": f"Successfully uploaded & stored {len(docs)} files to [{collection_name}] collection",

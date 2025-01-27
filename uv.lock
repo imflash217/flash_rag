@@ -239,6 +239,7 @@ dependencies = [
     { name = "langchain" },
     { name = "langchain-community" },
     { name = "python-multipart" },
+    { name = "requests" },
     { name = "ujson" },
     { name = "uvicorn" },
 ]
@@ -249,6 +250,7 @@ requires-dist = [
     { name = "langchain", specifier = ">=0.3.15" },
     { name = "langchain-community", specifier = ">=0.3.15" },
     { name = "python-multipart", specifier = ">=0.0.20" },
+    { name = "requests", specifier = ">=2.32.3" },
     { name = "ujson", specifier = ">=5.10.0" },
     { name = "uvicorn", specifier = ">=0.34.0" },
 ]
