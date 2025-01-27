@@ -4,3 +4,7 @@ def get_prompt(user_prompt: str):
 Answer:
 """
     return prompt.strip()
+
+
+def get_llm():
+    return None
