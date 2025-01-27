@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile, File
 import utils
 import hyperparams as hp
 from contextlib import asynccontextmanager
@@ -39,16 +39,44 @@ def index():
 
 @rag_app.get("/init_llm")
 def init_llm():
-    pass
+    kwargs = hp.model_args
+    llm = utils.get_llm(**kwargs)
+    hp.ml_models["llm"] = llm
+    return {"message": "LLM initialized", "LLM init params": kwargs}
+
+
+@rag_app.post("/upload")
+def upload_docs(docs: list[UploadFile] = File(...)):
+    docs_metadata = {}
+    for doc in docs:
+        # step-1: load/read every uploaded document
+        fname = doc.filename
+        try:
+            contents = doc.file.read()
+            with open(f"../data/{fname}", "wb") as f:
+                f.write(contents)
+            docs_metadata[fname] = {
+                "status": "SUCCESS",
+            }
+        except Exception:
+            docs_metadata[fname] = {
+                "status": "FAILED",
+            }
+            return {"message": "Error reading the uploaded doc"}
+        finally:
+            doc.file.close()
+
+        # step-2: tokenize, embed & store every file embeddings into the vector store
+        # TODO!
+
+    return {
+        "message": f"Successfully uploaded & stored {len(docs)} files",
+        "docs_metadata": docs_metadata,
+    }
 
 
 @rag_app.get("/query")
 def query():
-    pass
-
-
-@rag_app.post("/upload")
-def upload_docs():
     pass
 
 
