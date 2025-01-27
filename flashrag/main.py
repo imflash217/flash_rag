@@ -2,6 +2,7 @@ from fastapi import FastAPI
 import utils
 import hyperparams as hp
 from contextlib import asynccontextmanager
+import uvicorn
 
 
 # step-1: create a lifespan for the application
@@ -29,7 +30,11 @@ rag_app = FastAPI(title="Flash RAG", lifespan=app_lifespan)
 
 @rag_app.get("/")
 def index():
-    return "Hello! from Flash RAG application"
+    return {
+        "message": "Hello! from Flash RAG application",
+        "author": "Vinay Kumar",
+        "year": 2025,
+    }
 
 
 @rag_app.get("/init_llm")
@@ -47,5 +52,6 @@ def upload_docs():
     pass
 
 
+# necessary to run the application via uvicorn
 if __name__ == "__main__":
-    pass
+    uvicorn.run(app="main:rag_app", host="0.0.0.0", port=8000, reload=True)
