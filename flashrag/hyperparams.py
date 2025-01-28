@@ -1,7 +1,13 @@
 llm = None
-llm_fpath = "../../rag_api/models/llama-2-7b.Q8_0.gguf"
 db_name = {}
-llm_model_args = {}
+llm_model_args = {
+    "model_path": "../../rag_api/models/llama-2-7b.Q8_0.gguf",
+    "n_gpu_layers": 500,
+    "n_batch": 32,
+    "max_tokens": 500,
+    "n_ctx": 4096,
+    "temperature": 0,
+}
 vector_db_embeddings_model_name = "all-MiniLM-L6-v2"
 vector_db_collection_name_default = "flashrag_collection_default"
 vector_db_num_responses = 2

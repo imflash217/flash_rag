@@ -8,7 +8,6 @@ chromadb_client = chromadb.PersistentClient(path=hp.vector_db_persistent_path)
 
 
 def get_embeddings_model(model_name=hp.vector_db_embeddings_model_name):
-    # TODO!
     embeddings_func = (
         chromadb.utils.embedding_functions.SentenceTransformerEmbeddingFunction(
             model_name=model_name,
@@ -18,8 +17,7 @@ def get_embeddings_model(model_name=hp.vector_db_embeddings_model_name):
 
 
 def get_llm():
-    # TODO!
-    llm = llamacpp.LlamaCpp(model_path=hp.llm_fpath)
+    llm = llamacpp.LlamaCpp(**hp.llm_model_args)
     return llm
 
 
@@ -41,11 +39,6 @@ def get_text_splitter(
 def preprocess_pdf_doc(fpath, text_splitter):
     data = PyPDFLoader(fpath).load_and_split(text_splitter)
     return data
-
-
-def preprocess_txt_doc(fpath, text_splitter):
-    # TODO!
-    ...
 
 
 def register_vector_db_collection(collection_name):

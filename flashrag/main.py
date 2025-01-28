@@ -78,10 +78,6 @@ def upload_docs(
             doc_data = utils.preprocess_pdf_doc(
                 fpath=fpath, text_splitter=text_splitter
             )
-        elif fname.endswith(".txt"):
-            doc_data = utils.preprocess_txt_doc(
-                fpath=fpath, text_splitter=text_splitter
-            )
         else:
             return {"message": "Uploaded file-format NOT supported"}
 
@@ -131,7 +127,7 @@ def query(
 
     return {
         "user_query": f"{query}",
-        "retrived_docs": f"{retrieved_responses}",
+        "retrieved_docs": f"{retrieved_responses}",
         "llm_response": f"{llm_response}",
     }
 
