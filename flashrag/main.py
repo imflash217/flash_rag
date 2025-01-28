@@ -3,6 +3,7 @@ import utils
 import hyperparams as hp
 from contextlib import asynccontextmanager
 import uvicorn
+from prompts import get_prompt
 
 
 # step-1: create a lifespan for the application
@@ -85,7 +86,9 @@ def upload_docs(
             return {"message": "Uploaded file-format NOT supported"}
 
         # step-3: create embeddings & store into the vector store
-        utils.load_vector_db(data=doc_data, collection_name=collection_name)
+        utils.create_vector_db_collection(
+            data=doc_data, collection_name=collection_name
+        )
 
     return {
         "message": f"Successfully uploaded & stored {len(docs)} files to [{collection_name}] collection",
@@ -116,13 +119,21 @@ def query(
         }
 
     # step-3: if the queried collection is available:
-    # step-3: - load the collection
-    # step-3: - retrieve the matching vector items to the query
-    # step-3: - create a prompt using the query & retrieved items
-    # TODO!
+    # step-3a: - load the collection
+    collection = utils.load_vector_db_collection(collection_name=collection_name)
+    # step-3b: - retrieve the matching vector items to the query
+    retrieved_responses = collection.query(query_texts=[query], n_results=num_responses)
+    # step-3c: - create a prompt using the query & retrieved items
+    prompt = get_prompt(user_prompt=query, retrieved_responses=retrieved_responses)
 
     # step-4: send prompt to the LLM & return the response
-    # TODO!
+    llm_response = utils.call_llm(prompt=prompt)
+
+    return {
+        "user_query": f"{query}",
+        "retrived_docs": f"{retrieved_responses}",
+        "llm_response": f"{llm_response}",
+    }
 
 
 # necessary to run the application via uvicorn
