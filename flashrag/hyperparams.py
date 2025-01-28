@@ -1,7 +1,7 @@
 llm = None
 db_name = {}
 llm_model_args = {
-    "model_path": "../../rag_api/models/llama-2-7b.Q8_0.gguf",
+    "model_path": "../models/llama-2-7b.Q8_0.gguf",
     "n_gpu_layers": 500,
     "n_batch": 32,
     "max_tokens": 500,
