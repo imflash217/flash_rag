@@ -1,8 +1,10 @@
-import hyperparams as hp
 import chromadb
+import hyperparams as hp
 import langchain_text_splitters as lts
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.llms import llamacpp
+
+# from llama_cpp import Llama
 
 chromadb_client = chromadb.PersistentClient(path=hp.vector_db_persistent_path)
 
@@ -18,6 +20,13 @@ def get_embeddings_model(model_name=hp.vector_db_embeddings_model_name):
 
 def get_llm():
     llm = llamacpp.LlamaCpp(**hp.llm_model_args)
+
+    # llm = Llama.from_pretrained(
+    #     repo_id="TheBloke/nsql-llama-2-7B-GGUF",
+    #     filename="nsql-llama-2-7b.Q2_K.gguf",
+    #     **hp.llm_model_args,
+    # )
+
     return llm
 
 
